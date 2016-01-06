@@ -26,5 +26,17 @@
     <Setting Name="HoverControls" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="LastFMUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Username</Value>
+    </Setting>
+    <Setting Name="LastFMPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1234567</Value>
+    </Setting>
+    <Setting Name="MaxiZoomLevel" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MiniAlwaysOnTop" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

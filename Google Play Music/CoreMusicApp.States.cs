@@ -17,7 +17,7 @@ namespace Google_Play_Music
             Padding = new Padding(2, 24, 2, 2);
             if (GPMBrowser != null)
             {
-                GPMBrowser.SetZoomLevel(0);
+                GPMBrowser.SetZoomLevel(Properties.Settings.Default.MaxiZoomLevel);
             }
             FormBorderStyle = FormBorderStyle.Sizable;
             MaximumSize = new Size();
@@ -42,17 +42,27 @@ namespace Google_Play_Music
             FormBorderStyle = FormBorderStyle.None;
             Size = savedSize;
             FormBorderStyle = FormBorderStyle.Sizable;
+
+            TopMost = false;
         }
 
         public void restoreMiniState()
         {
+            // DPI CALCS
+            float dpiX, dpiY;
+            Graphics graphics = this.CreateGraphics();
+            dpiX = graphics.DpiX;
+            dpiY = graphics.DpiY;
+            int ratioX, ratioY;
+            ratioX =  (int)dpiX / 96;
+            ratioY = (int)dpiY / 96;
             mini = true;
             // Mini form settings
             Padding = new Padding(2);
-            ClientSize = new Size(300, 300);
+            ClientSize = new Size(300 * ratioX, 300 * ratioY);
             MaximizeBox = false;
-            MaximumSize = new Size(300, 300);
-            MinimumSize = new Size(100, 100);
+            MaximumSize = new Size(300 * ratioX, 300 * ratioY);
+            MinimumSize = new Size(100 * ratioX, 100 * ratioY);
             handleZoom = true;
             FormBorderStyle = FormBorderStyle.None;
 
@@ -62,7 +72,7 @@ namespace Google_Play_Music
             savedPoint = (onScreen(savedPoint) ? savedPoint : new Point(-1, -1));
             if (savedSize.Height == -1 && savedSize.Width == -1)
             {
-                savedSize = new Size(300, 300);
+                savedSize = new Size(300 * ratioX, 300 * ratioY);
             }
             if (savedPoint.X == -1 && savedPoint.Y == -1)
             {
@@ -71,6 +81,8 @@ namespace Google_Play_Music
             Location = savedPoint;
             Size = savedSize;
             setZoomRatio();
+
+            TopMost = Properties.Settings.Default.MiniAlwaysOnTop;
         }
 
         public void saveMaxiState()

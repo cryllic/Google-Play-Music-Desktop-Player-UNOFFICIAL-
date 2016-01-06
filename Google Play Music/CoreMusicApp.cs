@@ -15,7 +15,7 @@ namespace Google_Play_Music
     public partial class CoreMusicApp : MaterialForm
     {
 
-        private const string CURRENT_VERSION = "1.8.0";
+        private const string CURRENT_VERSION = "2.0.2";
         private MaterialSkinManager skin;
         private Size rolling_size;
         private Size last_size;
@@ -163,17 +163,22 @@ namespace Google_Play_Music
         // Media Functions
         private void playPause()
         {
-            GPMBrowser.EvaluateScriptAsync("(function() {document.querySelectorAll('[data-id=play-pause]')[0].click()})()");
+            GPMBrowser.EvaluateScriptAsync("(function() {window.GPM.playback.playPause();})()");
         }
 
         private void prevTrack()
         {
-            GPMBrowser.EvaluateScriptAsync("(function() {document.querySelectorAll('[data-id=rewind]')[0].click()})()");
+            GPMBrowser.EvaluateScriptAsync("(function() {window.GPM.playback.rewind();})()");
         }
 
         private void nextTrack()
         {
-            GPMBrowser.EvaluateScriptAsync("(function() {document.querySelectorAll('[data-id=forward]')[0].click()})()");
+            GPMBrowser.EvaluateScriptAsync("(function() {window.GPM.playback.forward();})()");
+        }
+
+        private void findFocus()
+        {
+            GPMBrowser.EvaluateScriptAsync("(function() {document.querySelectorAll('sj-search-box > input')[0].focus()})()");
         }
 
         // Task Bar Media Controls
@@ -263,12 +268,21 @@ namespace Google_Play_Music
 
         private void setZoomRatio()
         {
+            // DPI CALCS
+            float dpiX, dpiY;
+            Graphics graphics = this.CreateGraphics();
+            dpiX = graphics.DpiX;
+            dpiY = graphics.DpiY;
+            int ratioX, ratioY;
+            ratioX = (int)dpiX / 96;
+            ratioY = (int)dpiY / 96;
+
             // The mini player must always be a square
             int D = Math.Max(ClientSize.Width, ClientSize.Height);
             ClientSize = new Size(D, D);
             var tmp = Size;
             Size = tmp;
-            double ratio = D / 300.0;
+            double ratio = D / (300.0 * ratioX);
             // Browser zoom level formula is [percentage] = 1.2 ^ [zoom level]
             // So we reverse to get [zoom level] = Log[percentage] / Log[1.2]
             double factor = Math.Log10(ratio) / Math.Log10(1.2);

@@ -1,6 +1,10 @@
 Google Play Music™ Desktop Player
 =========================
-[![GitHub version](https://badge.fury.io/gh/MarshallOfSound%2FGoogle-Play-Music-Desktop-Player-UNOFFICIAL-.svg)](https://badge.fury.io/gh/MarshallOfSound%2FGoogle-Play-Music-Desktop-Player-UNOFFICIAL-) [![Code Climate](https://codeclimate.com/github/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-/badges/gpa.svg)](https://codeclimate.com/github/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-) <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=23CZGASL6XMLJ" title="Help me out by donating to this project"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a>  
+
+[![Join the chat at https://gitter.im/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Github All Releases](https://img.shields.io/github/downloads/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-/total.svg)]()
+[![Build status](https://ci.appveyor.com/api/projects/status/clg5vclqyltff7hg/branch/master?svg=true)](https://ci.appveyor.com/project/MarshallOfSound/google-play-music-desktop-player-unofficial/branch/master)
+ [![GitHub version](https://badge.fury.io/gh/MarshallOfSound%2FGoogle-Play-Music-Desktop-Player-UNOFFICIAL-.svg)](https://badge.fury.io/gh/MarshallOfSound%2FGoogle-Play-Music-Desktop-Player-UNOFFICIAL-) [![Code Climate](https://codeclimate.com/github/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-/badges/gpa.svg)](https://codeclimate.com/github/MarshallOfSound/Google-Play-Music-Desktop-Player-UNOFFICIAL-) <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=23CZGASL6XMLJ" title="Help me out by donating to this project"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a>  
 
 ![](https://www.samuel.ninja/img/gpmdp_screen.gif)
 
@@ -18,13 +22,18 @@ Requirements
 * Windows Vista or later (Might work on XP, I've never tried)
 * [Adobe Flash Player][2]
 
+Using Flash Player is not my choice and this app is in no way based on flash.  However flash is required to play the music because Google's support for HTML5 Audio relies on the MP3 codec and some third party DRM library.  Both of which require licenses and can't be open sourced.  So until Google figures out an open source solution to the DRM media problem, we are stuck with Flash.
+
 [2]: http://get.adobe.com/flashplayer/
+[3]: https://wix.codeplex.com/releases/view/618180
 
 Features
 --------
 
 * Supports media keys (play, pause, next, previous)
+* [last.fm](https://www.last.fm) scrobbling and now playing support!
 * Desktop notifications on track change
+* A simplistic mini player
 * Dark theme
 * Task bar media controls (media controls embedded into the taskbar)
 * Smooth scrolling and overlay scrollbars for a nicer User Experience
@@ -34,12 +43,18 @@ Development
 -----------
 
 To get started just pull the repo and open `Google Play Music.sln` in Visual Studio, pull down all the NuGet dependencies and it should just work.
+To build the installers you need to have a Code Signing certificate installed on your machine.  You can create a self signed one for dev purposes if you want, there are plenty of tutorials.  Just google it :)
+All releases will be signing with my Code Signing Certificate
 
 Contributing
 ------------
 
 If you find something wrong (theming issues, app crashes) please report them as an issue.  
 If you think you can add something cool or fix a problem, fork the repo and make a pull request :D
+
+Dev Requirements
+----------------
+* [WiX v3.10.1][3]
 
 Credit
 -----------

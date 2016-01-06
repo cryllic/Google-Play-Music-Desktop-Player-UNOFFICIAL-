@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google_Play_Music.Utilities;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using MaterialSkin;
@@ -33,14 +34,14 @@ namespace Google_Play_Music
                 string command;
                 if (materialCheckBox1.Checked)
                 {
-                    command = "window.turnOnCustom()";
+                    command = "window.theme.enable()";
                     app.Invoke((MethodInvoker)delegate
                     {
                         app.darkTheme();
                     });
                 } else
                 {
-                    command = "window.turnOffCustom()";
+                    command = "window.theme.disable()";
                     app.Invoke((MethodInvoker)delegate
                     {
                         app.lightTheme();
@@ -71,17 +72,74 @@ namespace Google_Play_Music
                 Properties.Settings.Default.HoverControls = !materialCheckBox3.Checked;
                 app.Invoke((MethodInvoker)delegate
                 {
-                    app.GPMBrowser.EvaluateScriptAsync("(function() {window.hoverControls = " + (!materialCheckBox3.Checked).ToString().ToLower() + "})();");
+                    if (Properties.Settings.Default.HoverControls)
+                    {
+                        app.GPMBrowser.EvaluateScriptAsync("window.GPM.mini.showControlsWhen('hover');");
+                    } else
+                    {
+                        app.GPMBrowser.EvaluateScriptAsync("window.GPM.mini.showControlsWhen('always');");
+                    }
                 });
             };
 
-            materialRaisedButton1.Click += (res, send) =>
+            materialCheckBox4.Checked = Properties.Settings.Default.MiniAlwaysOnTop;
+            materialCheckBox4.CheckStateChanged += (res, send) =>
             {
-                Properties.Settings.Default.Reset();
-                Properties.Settings.Default.Save();
-                DialogResult = DialogResult.Abort;
-                Close();
+                Properties.Settings.Default.MiniAlwaysOnTop = materialCheckBox4.Checked;
             };
+
+            lastFMUsername.Text = Properties.Settings.Default.LastFMUsername;
+            lastFMUsername.GotFocus += (res, send) =>
+            {
+                focusDefaultInputField(lastFMUsername, "Username", true);
+            };
+            lastFMUsername.LostFocus += async (res, send) =>
+            {
+                focusDefaultInputField(lastFMUsername, "Username", false);
+                Properties.Settings.Default.LastFMUsername = lastFMUsername.Text;
+                lastFMAuth(-1);
+                await new LastFM().init();
+                lastFMAuth((LastFM.user_key != null ? 1 : 0));
+            };
+            lastFMUsername.KeyPress += (send, e) =>
+            {
+                if (e.KeyChar == (char)13)
+                {
+                    lastFMPassword.Focus();
+                }
+            };
+
+            lastFMPassword.Text = Properties.Settings.Default.LastFMPassword;
+            lastFMPassword.GotFocus += (res, send) =>
+            {
+                focusDefaultInputField(lastFMPassword, "1234567", true);
+            };
+            lastFMPassword.LostFocus += async (res, send) =>
+            {
+                focusDefaultInputField(lastFMPassword, "1234567", false);
+                Properties.Settings.Default.LastFMPassword = lastFMPassword.Text;
+                lastFMAuth(-1);
+                await new LastFM().init();
+                lastFMAuth((LastFM.user_key != null ? 1 : 0));
+            };
+            lastFMPassword.KeyPress += (send, e) =>
+            {
+                if (e.KeyChar == (char)13)
+                {
+                    lastFMUsername.Focus();
+                }
+            };
+        }
+
+        private void focusDefaultInputField(MaterialSingleLineTextField field, string defaultText, bool focus)
+        {
+            if (field.Text == defaultText && focus)
+            {
+                field.Text = "";
+            } else if (field.Text == "" && !focus)
+            {
+                field.Text = defaultText;
+            }
         }
 
         private void Color_Changed(object sender, EventArgs e)
@@ -91,7 +149,7 @@ namespace Google_Play_Music
             string RGB = "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
             app.Invoke((MethodInvoker)delegate
             {
-                app.GPMBrowser.EvaluateScriptAsync("(function() {window.CustomColor = '" + RGB + "'; window.ReDrawTheme();})();");
+                app.GPMBrowser.EvaluateScriptAsync("window.theme.updateTheme({foreSecondary: '" + RGB + "'});");
             });
         }
 
@@ -99,10 +157,31 @@ namespace Google_Play_Music
         {
             Activated += (res, send) =>
             {
-                Location = new Point(X - 300, Y - 125);
+                lastFMAuth((LastFM.user_key != null ? 1 : 0));
+                Location = new Point(X - 300, Y - 200);
             };
             var result = ShowDialog();
             return result;
+        }
+
+        private void lastFMAuth(int isAuth)
+        {
+            // 1 = Auth Success
+            // 0 = Auth Failure
+            // -1 = Auth in Progress
+            if (isAuth == 1)
+            {
+                lastFMAuthIndicator.ForeColor = Color.Green;
+                lastFMAuthIndicator.Text = "Login Successful";
+            } else if (isAuth == 0)
+            {
+                lastFMAuthIndicator.ForeColor = Color.Red;
+                lastFMAuthIndicator.Text = "Login Failed";
+            } else if (isAuth == -1)
+            {
+                lastFMAuthIndicator.ForeColor = Color.Yellow;
+                lastFMAuthIndicator.Text = "Logging in...";
+            }
         }
     }
 }

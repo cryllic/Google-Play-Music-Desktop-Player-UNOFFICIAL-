@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using CefSharp;
 
 namespace Google_Play_Music
 {
@@ -17,6 +19,10 @@ namespace Google_Play_Music
         {
             if (mutex.WaitOne(TimeSpan.Zero, true))
             {
+                // Init the last.fm authentication with the user set username and password
+                Task lastFMInit = new LastFM().init();
+                lastFMInit.Wait();
+                Cef.EnableHighDPISupport();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new CoreMusicApp());

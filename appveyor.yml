@@ -1,0 +1,30 @@
+version: 1.9.2-{build}
+install:
+  - ps: Install-Product node $env:nodejs_version
+before_build:
+- cmd: nuget restore && echo %api_key% > "Google Play Music\Resources\Raw\api_key.txt" && echo %api_secret% > "Google Play Music\Resources\Raw\api_secret.txt"
+build:
+  verbosity: minimal
+
+environment:
+  nodejs_version: "0.10"
+  api_key:
+    secure: 8H3ycOrOBgjBUrWwD9HYiUQKXWx4Vp1QkhM7nVcYQQZRLj1UADNwdAv3ZBPlj9Tk
+  api_secret:
+    secure: Tqo5IfQiiiJxFoGOoaNSR7IniW9lVRArtQU1OtW5tzGth/BiovS4Xyxh/PyKv8ct
+
+platform:
+  - x86
+  - x64
+
+configuration:
+  - Release
+
+matrix:
+  fast_finish: true
+
+artifacts:
+  - path: Google Play Music/bin/$(platform)/$(configuration)
+    name: GPMDP.Beta.$(platform)
+  - path: Google Play Music.Bootstrapper/bin/$(platform)/$(configuration)/Google Play Music Desktop Player $(platform).exe
+    name: GPMDP.Beta.$(platform).Installer
